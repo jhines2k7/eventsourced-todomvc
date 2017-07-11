@@ -1,0 +1,7 @@
+/.idea/
+/node_modules/
+/dist/
+/rocketscores-ui.iml
+/stats.json
+*.swp
+/.tmp/

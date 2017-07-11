@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  rocketscores-ui:
+    image: jhines2017/rocketscores-ui
+    container_name: rocketscores-ui
+    ports:
+      - "80:80"
+
+  rocketscores-api:
+    image: jhines2017/rocketscores-api
+    container_name: rocketscores-api
+    ports:
+      - "3000:3000"
