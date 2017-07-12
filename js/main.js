@@ -16,6 +16,9 @@ document.querySelector('.new-todo').addEventListener('keypress', function (e) {
                 label: e.currentTarget.value,
                 complete: false
             }
+        }, {
+            channel: 'async',
+            topic: 'increment-item-count'
         }]);
 
         e.currentTarget.value = '';

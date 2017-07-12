@@ -5,10 +5,12 @@ export default function reduce(events) {
         if(event.topic === 'todo.add') {
             let todos = state.todos.slice();
             
-            todos.splice(todos.length - 1, 0, event.data)
+            todos.splice(todos.length, 0, event.data)
             
             state.todos = todos;
+        }
 
+        if(event.topic === 'increment-item-count') {
             state.itemsLeft++;
         }
 
