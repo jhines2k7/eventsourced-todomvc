@@ -2,12 +2,17 @@ export default function reduce(events) {
     "use strict";
 
     return events.reduce( (state, event) => {
-        if(event.topic === 'myapp.increment.count') {
-            state.total++;
+        if(event.topic === 'todo.add') {
+            let todos = state.todos.slice();
+            
+            todos.splice(todos.length - 1, 0, event.data)
+            
+            state.todos = todos;
         }
 
         return state;
     }, {
-        total: 0
+        todos: [],
+        itemsLeft: 0,
     });
 }
