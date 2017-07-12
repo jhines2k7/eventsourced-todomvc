@@ -30,12 +30,17 @@ postal.subscribe({
 
         let ul = document.querySelector('.todo-list');
 
+        let span = document.querySelector('.todo-count');
+        span.childNodes[1].textContent = state.itemsLeft === 1 ? ' item left' : ' items left'; 
+
+        let strong = document.querySelector('.todo-count strong');
+        strong.textContent = state.itemsLeft;
+
         while (ul.firstChild) {
             ul.removeChild(ul.firstChild);
         }
 
         state.todos.forEach((todo) => {
-
             let fragment = document.createDocumentFragment();
 
             let li = document.createElement('li');

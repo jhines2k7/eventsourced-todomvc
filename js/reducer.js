@@ -8,6 +8,8 @@ export default function reduce(events) {
             todos.splice(todos.length - 1, 0, event.data)
             
             state.todos = todos;
+
+            state.itemsLeft++;
         }
 
         return state;
