@@ -31,50 +31,58 @@ postal.subscribe({
     callback: function(data, envelope) {
         let state = reduce(EventStore.events);
 
-        let ul = document.querySelector('.todo-list');
-
-        let span = document.querySelector('.todo-count');
-        span.childNodes[1].textContent = state.itemsLeft === 1 ? ' item left' : ' items left'; 
-
-        let strong = document.querySelector('.todo-count strong');
-        strong.textContent = state.itemsLeft;
-
-        while (ul.firstChild) {
-            ul.removeChild(ul.firstChild);
-        }
-
-        state.todos.forEach((todo) => {
-            let fragment = document.createDocumentFragment();
-
-            let li = document.createElement('li');
-            
-            let div = document.createElement('div');
-            div.className = 'view';
-            
-            let input = document.createElement('input');
-            input.className = 'toggle'
-            input.setAttribute('type', 'checkbox');
-            
-            let label = document.createElement('label');
-            label.textContent = todo.label;
-            
-            let button = document.createElement('button');
-            button.className = 'destroy';
-
-            div.appendChild(input);
-            div.appendChild(label);
-            div.appendChild(button);
-            li.appendChild(div);
-
-            fragment.appendChild(li);
-
-            ul.appendChild(fragment);
-        });        
+        renderTodos(state);    
     }.bind(this)
 });
+
+function renderTodos(state) {
+    let ul = document.querySelector('.todo-list');
+
+    let span = document.querySelector('.todo-count');
+    span.childNodes[1].textContent = state.itemsLeft === 1 ? ' item left' : ' items left'; 
+
+    let strong = document.querySelector('.todo-count strong');
+    strong.textContent = state.itemsLeft;
+
+    while (ul.firstChild) {
+        ul.removeChild(ul.firstChild);
+    }
+
+    state.todos.forEach((todo) => {
+        let fragment = document.createDocumentFragment();
+
+        let li = document.createElement('li');
+        
+        let div = document.createElement('div');
+        div.className = 'view';
+        
+        let input = document.createElement('input');
+        input.className = 'toggle'
+        input.setAttribute('type', 'checkbox');
+        
+        let label = document.createElement('label');
+        label.textContent = todo.label;
+        
+        let button = document.createElement('button');
+        button.className = 'destroy';
+
+        div.appendChild(input);
+        div.appendChild(label);
+        div.appendChild(button);
+        li.appendChild(div);
+
+        fragment.appendChild(li);
+
+        ul.appendChild(fragment);
+    });
+
+    return ul;
+}
 
 Storage.get().then( (events) => {
     EventStore.events = events;
 
     let state = reduce(events);
+
+    renderTodos(state);
 });
