@@ -31,7 +31,21 @@ postal.subscribe({
     callback: function(data, envelope) {
         let state = reduce(EventStore.events);
 
-        renderTodos(state);    
+        let footer = document.querySelector('.footer');
+        let label = document.querySelector('label[for="toggle-all"]');
+        let input = document.querySelector('.toggle-all');
+
+        if(state.todos.length > 0) {
+            footer.style.display = 'block';
+            label.style.display = 'block';
+            input.style.display = 'block';
+            renderTodos(state);    
+        } else {
+            footer.style.display = 'none'; 
+            label.style.display = 'none'; 
+            input.style.display = 'none'; 
+        }
+        
     }.bind(this)
 });
 
@@ -84,5 +98,18 @@ Storage.get().then( (events) => {
 
     let state = reduce(events);
 
-    renderTodos(state);
+    let footer = document.querySelector('.footer');
+    let label = document.querySelector('label[for="toggle-all"]');
+    let input = document.querySelector('.toggle-all');
+
+    if(state.todos.length > 0) {
+        footer.style.display = 'block';
+        label.style.display = 'block';
+        input.style.display = 'block';
+        renderTodos(state);    
+    } else {
+        footer.style.display = 'none'; 
+        label.style.display = 'none'; 
+        input.style.display = 'none'; 
+    }
 });
