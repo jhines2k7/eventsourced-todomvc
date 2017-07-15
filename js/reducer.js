@@ -36,15 +36,46 @@ export default function reduce(events) {
 
             if(toggleState[event.data.id] === false) {
                 state.itemsLeft++;
+                state.numCompletedTodos--;
             } else {
                 state.itemsLeft--;
+                state.numCompletedTodos++;
             } 
+        }
+
+        if(event.topic === 'todo.clear.completed') {
+            let notCompleted = state.todos.filter( (todo) => {
+                if(!todo.complete) {
+                    delete toggleState[todo.id];
+
+                    return !todo.complete;
+                }
+                
+            });
+
+            state.todos = notCompleted;
+            state.numCompletedTodos = 0;
+        }
+
+        if(event.topic === 'todo.filter') {
+            let filtered = state.todos.filter( (todo) => {
+                if(event.data === 'active') {
+                    return !todo.complete;
+                } else if(event.data === 'completed') {
+                    return todo.complete;
+                } else {
+                    return todo;
+                }                
+            });
+
+            state.todos = filtered   
         }
 
         return state;
     }, {
         todos: [],
         itemsLeft: 0,
-        currentFilter: 'all'
+        currentFilter: 'all',
+        numCompletedTodos: 0
     });
 }

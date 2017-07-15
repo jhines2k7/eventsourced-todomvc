@@ -26,6 +26,21 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
     }    
 }, false);
 
+window.addEventListener("hashchange", (e) => {    
+    EventStore.add(EventStore.events, [{
+        channel: 'async',
+        topic: 'todo.filter',
+        data: e.target.location.hash.substr(2)
+    }]);
+}, false);
+
+document.querySelector('.clear-completed').addEventListener('click', (e) => {
+    EventStore.add(EventStore.events, [{
+        channel: 'async',
+        topic: 'todo.clear.completed'
+    }])
+}, false);
+
 function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
     s4() + '-' + s4() + s4() + s4();
@@ -36,7 +51,6 @@ function s4() {
     .toString(16)
     .substring(1);
 }
-
 
 postal.subscribe({
     channel: 'async',
@@ -68,6 +82,26 @@ postal.subscribe({
     }.bind(this)
 });
 
+postal.subscribe({
+    channel: 'async',
+    topic: 'todo.clear.completed',
+    callback: function(data, envelope) {
+        let state = reduce(EventStore.events);        
+
+        renderTodos(state);        
+    }.bind(this)
+});
+
+postal.subscribe({
+    channel: 'async',
+    topic: 'todo.filter',
+    callback: function(data, envelope) {
+        let state = reduce(EventStore.events);        
+
+        renderTodos(state);        
+    }.bind(this)
+});
+
 function renderTodos(state) {
     let footer = document.querySelector('.footer');
     let label = document.querySelector('label[for="toggle-all"]');
@@ -81,6 +115,12 @@ function renderTodos(state) {
         footer.style.display = 'none'; 
         label.style.display = 'none'; 
         input.style.display = 'none'; 
+    }
+
+    if(state.numCompletedTodos > 0) {
+        document.querySelector('.clear-completed').style.display = 'block';
+    } else {
+        document.querySelector('.clear-completed').style.display = 'none';
     }
 
     let ul = document.querySelector('.todo-list');
