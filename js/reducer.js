@@ -14,9 +14,6 @@ export default function reduce(events) {
     return events.reduce( (state, event) => {
         if(event.topic === 'todo.add') {            
             state.todos.push(event.data);
-        }
-
-        if(event.topic === 'increment-item-count') {
             state.itemsLeft++;
         }
 
@@ -24,6 +21,12 @@ export default function reduce(events) {
             toggleState[event.data] = !toggleState[event.data];
 
             state.todos[event.data].complete =  toggleState[event.data];
+
+            if(toggleState[event.data] === false) {
+                state.itemsLeft++;
+            } else {
+                state.itemsLeft--;
+            } 
         }
 
         return state;

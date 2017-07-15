@@ -89,9 +89,7 @@ function renderTodos(state) {
     state.todos.forEach((todo, idx) => {
         let fragment = document.createDocumentFragment();
 
-        let li = document.createElement('li');
-        li.setAttribute('data-idx', idx);
-        li.setAttribute('data-complete', todo.complete);
+        let li = document.createElement('li');       
 
         let div = document.createElement('div');
         div.className = 'view';
@@ -102,7 +100,7 @@ function renderTodos(state) {
 
         if(todo.complete) {
             li.className = 'completed';
-            input.checked = true;
+            input.checked = true;            
         }
         
         input.addEventListener('click', (e) => {
