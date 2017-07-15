@@ -13,6 +13,7 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
             channel: 'async',
             topic: 'todo.add',
             data: {
+                id: guid(),
                 label: e.currentTarget.value,
                 complete: false
             }
@@ -24,6 +25,18 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
         e.currentTarget.value = '';
     }    
 }, false);
+
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
 
 postal.subscribe({
     channel: 'async',
@@ -103,7 +116,10 @@ function renderTodos(state) {
             EventStore.add(EventStore.events, [{
                 channel: 'async',
                 topic: 'todo.toggle',
-                data: idx
+                data: {
+                    idx: idx,
+                    id: todo.id
+                }
             }]);
         });        
         
@@ -119,7 +135,10 @@ function renderTodos(state) {
             EventStore.add(EventStore.events, [{
                 channel: 'async',
                 topic: 'todo.remove',
-                data: idx
+                data: {
+                    idx: idx,
+                    id: todo.id
+                } 
             }]);
         });
 

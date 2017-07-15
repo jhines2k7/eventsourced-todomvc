@@ -11,30 +11,30 @@ export default function reduce(events) {
     }
     */
 
-    return events.reduce( (state, event) => {
+    return events.reduce( (state, event) => {        
         if(event.topic === 'todo.add') {            
             state.todos.push(event.data);
             state.itemsLeft++;
 
-            toggleState[state.itemsLeft - 1] = false;
+            toggleState[event.data.id] = false;
         }
 
         if(event.topic === 'todo.remove') {
-            state.todos.splice(event.data, 1);
+            state.todos.splice(event.data.idx, 1);
             
-            if(toggleState[event.data] === false) {
+            if(toggleState[event.data.id] === false) {
                 state.itemsLeft--;
             }
 
-            delete toggleState[event.data];
+            delete toggleState[event.data.id];
         }
 
         if(event.topic === 'todo.toggle') {
-            toggleState[event.data] = !toggleState[event.data];
+            toggleState[event.data.id] = !toggleState[event.data.id];
 
-            state.todos[event.data].complete = toggleState[event.data];
+            state.todos[event.data.idx].complete = toggleState[event.data.id];
 
-            if(toggleState[event.data] === false) {
+            if(toggleState[event.data.id] === false) {
                 state.itemsLeft++;
             } else {
                 state.itemsLeft--;
