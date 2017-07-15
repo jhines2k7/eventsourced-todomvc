@@ -31,22 +31,7 @@ postal.subscribe({
     callback: function(data, envelope) {
         let state = reduce(EventStore.events);
 
-        let footer = document.querySelector('.footer');
-        let label = document.querySelector('label[for="toggle-all"]');
-        let input = document.querySelector('.toggle-all');
-
-        if(state.todos.length > 0) {
-            footer.style.display = 'block';
-            label.style.display = 'block';
-            input.style.display = 'block';
-        } else {
-            footer.style.display = 'none'; 
-            label.style.display = 'none'; 
-            input.style.display = 'none'; 
-        }
-
-        renderTodos(state);    
-        
+        renderTodos(state);        
     }.bind(this)
 });
 
@@ -56,22 +41,7 @@ postal.subscribe({
     callback: function(data, envelope) {
         let state = reduce(EventStore.events);
 
-        let footer = document.querySelector('.footer');
-        let label = document.querySelector('label[for="toggle-all"]');
-        let input = document.querySelector('.toggle-all');
-
-        if(state.todos.length > 0) {
-            footer.style.display = 'block';
-            label.style.display = 'block';
-            input.style.display = 'block';
-        } else {
-            footer.style.display = 'none'; 
-            label.style.display = 'none'; 
-            input.style.display = 'none'; 
-        }
-
-        renderTodos(state);    
-        
+        renderTodos(state);        
     }.bind(this)
 });
 
@@ -79,27 +49,27 @@ postal.subscribe({
     channel: 'async',
     topic: 'todo.toggle',
     callback: function(data, envelope) {
-        let state = reduce(EventStore.events);
+        let state = reduce(EventStore.events);        
 
-        let footer = document.querySelector('.footer');
-        let label = document.querySelector('label[for="toggle-all"]');
-        let input = document.querySelector('.toggle-all');
-
-        if(state.todos.length > 0) {
-            footer.style.display = 'block';
-            label.style.display = 'block';
-            input.style.display = 'block';
-            renderTodos(state);    
-        } else {
-            footer.style.display = 'none'; 
-            label.style.display = 'none'; 
-            input.style.display = 'none'; 
-        }
-        
+        renderTodos(state);        
     }.bind(this)
 });
 
 function renderTodos(state) {
+    let footer = document.querySelector('.footer');
+    let label = document.querySelector('label[for="toggle-all"]');
+    let input = document.querySelector('.toggle-all');
+
+    if(state.todos.length > 0) {
+        footer.style.display = 'block';
+        label.style.display = 'block';
+        input.style.display = 'block';
+    } else {
+        footer.style.display = 'none'; 
+        label.style.display = 'none'; 
+        input.style.display = 'none'; 
+    }
+
     let ul = document.querySelector('.todo-list');
 
     let span = document.querySelector('.todo-count');
@@ -171,18 +141,5 @@ Storage.get().then( (events) => {
 
     let state = reduce(events);
 
-    let footer = document.querySelector('.footer');
-    let label = document.querySelector('label[for="toggle-all"]');
-    let input = document.querySelector('.toggle-all');
-
-    if(state.todos.length > 0) {
-        footer.style.display = 'block';
-        label.style.display = 'block';
-        input.style.display = 'block';
-        renderTodos(state);    
-    } else {
-        footer.style.display = 'none'; 
-        label.style.display = 'none'; 
-        input.style.display = 'none'; 
-    }
+    renderTodos(state);
 });

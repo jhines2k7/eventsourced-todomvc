@@ -32,7 +32,7 @@ export default function reduce(events) {
         if(event.topic === 'todo.toggle') {
             toggleState[event.data] = !toggleState[event.data];
 
-            state.todos[event.data].complete =  toggleState[event.data];
+            state.todos[event.data].complete = toggleState[event.data];
 
             if(toggleState[event.data] === false) {
                 state.itemsLeft++;
@@ -45,5 +45,6 @@ export default function reduce(events) {
     }, {
         todos: [],
         itemsLeft: 0,
+        currentFilter: 'all'
     });
 }
