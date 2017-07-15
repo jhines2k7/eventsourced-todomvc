@@ -15,6 +15,18 @@ export default function reduce(events) {
         if(event.topic === 'todo.add') {            
             state.todos.push(event.data);
             state.itemsLeft++;
+
+            toggleState[state.itemsLeft - 1] = false;
+        }
+
+        if(event.topic === 'todo.remove') {
+            state.todos.splice(event.data, 1);
+            
+            if(toggleState[event.data] === false) {
+                state.itemsLeft--;
+            }
+
+            delete toggleState[event.data];
         }
 
         if(event.topic === 'todo.toggle') {

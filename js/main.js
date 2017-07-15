@@ -39,12 +39,38 @@ postal.subscribe({
             footer.style.display = 'block';
             label.style.display = 'block';
             input.style.display = 'block';
-            renderTodos(state);    
         } else {
             footer.style.display = 'none'; 
             label.style.display = 'none'; 
             input.style.display = 'none'; 
         }
+
+        renderTodos(state);    
+        
+    }.bind(this)
+});
+
+postal.subscribe({
+    channel: 'async',
+    topic: 'todo.remove',
+    callback: function(data, envelope) {
+        let state = reduce(EventStore.events);
+
+        let footer = document.querySelector('.footer');
+        let label = document.querySelector('label[for="toggle-all"]');
+        let input = document.querySelector('.toggle-all');
+
+        if(state.todos.length > 0) {
+            footer.style.display = 'block';
+            label.style.display = 'block';
+            input.style.display = 'block';
+        } else {
+            footer.style.display = 'none'; 
+            label.style.display = 'none'; 
+            input.style.display = 'none'; 
+        }
+
+        renderTodos(state);    
         
     }.bind(this)
 });
@@ -103,9 +129,7 @@ function renderTodos(state) {
             input.checked = true;            
         }
         
-        input.addEventListener('click', (e) => {
-            let parentLi = e.currentTarget.closest('li');
-            
+        input.addEventListener('click', (e) => {            
             EventStore.add(EventStore.events, [{
                 channel: 'async',
                 topic: 'todo.toggle',
@@ -118,6 +142,16 @@ function renderTodos(state) {
         
         let button = document.createElement('button');
         button.className = 'destroy';
+
+        button.addEventListener('click', (e) => {
+            //e.stopPropagation();
+
+            EventStore.add(EventStore.events, [{
+                channel: 'async',
+                topic: 'todo.remove',
+                data: idx
+            }]);
+        });
 
         div.appendChild(input);
         div.appendChild(label);
