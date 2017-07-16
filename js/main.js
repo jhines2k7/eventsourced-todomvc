@@ -13,7 +13,6 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
             channel: 'async',
             topic: 'todo.add',
             data: {
-                id: guid(),
                 label: e.currentTarget.value,
                 complete: false
             }
@@ -26,11 +25,25 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
     }    
 }, false);
 
-window.addEventListener("hashchange", (e) => {    
+window.addEventListener("hashchange", (e) => {
+    // will need to reproduce state from the dom
+    // in order to properly filter todos
+    let liArray = Array.prototype.slice.call(document.querySelectorAll('.todo-list li'));
+
+    let todos = liArray.map( (li) => {
+        return {
+            label: li.innerText.trim(),
+            complete: li.className === 'completed' ? true : false
+        }
+    });
+
     EventStore.add(EventStore.events, [{
         channel: 'async',
         topic: 'todo.filter',
-        data: e.target.location.hash.substr(2)
+        data: {
+            filter: e.target.location.hash.substr(2),
+            todos: todos
+        }
     }]);
 }, false);
 
@@ -40,17 +53,6 @@ document.querySelector('.clear-completed').addEventListener('click', (e) => {
         topic: 'todo.clear.completed'
     }])
 }, false);
-
-function guid() {
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
-
-function s4() {
-  return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
-}
 
 postal.subscribe({
     channel: 'async',
@@ -152,13 +154,17 @@ function renderTodos(state) {
             input.checked = true;            
         }
         
-        input.addEventListener('click', (e) => {            
+        input.addEventListener('click', (e) => {
+            // will need to reproduce state from the dom
+            // in order to properly toggle a todo
+            let liArray = Array.prototype.slice.call(document.querySelectorAll('.todo-list li'));
+
             EventStore.add(EventStore.events, [{
                 channel: 'async',
                 topic: 'todo.toggle',
                 data: {
                     idx: idx,
-                    id: todo.id
+                    complete: liArray[idx].className === 'completed' ? false : true
                 }
             }]);
         });        
@@ -170,14 +176,16 @@ function renderTodos(state) {
         button.className = 'destroy';
 
         button.addEventListener('click', (e) => {
-            //e.stopPropagation();
+            // will need to reproduce state from the dom
+            // in order to properly remove a todo
+            let liArray = Array.prototype.slice.call(document.querySelectorAll('.todo-list li'));
 
             EventStore.add(EventStore.events, [{
                 channel: 'async',
                 topic: 'todo.remove',
                 data: {
                     idx: idx,
-                    id: todo.id
+                    wasComplete: liArray[idx].className === 'completed' ? true : false
                 } 
             }]);
         });
