@@ -26,24 +26,10 @@ document.querySelector('.new-todo').addEventListener('keypress', (e) => {
 }, false);
 
 window.addEventListener("hashchange", (e) => {
-    // will need to reproduce state from the dom
-    // in order to properly filter todos
-    let liArray = Array.prototype.slice.call(document.querySelectorAll('.todo-list li'));
-
-    let todos = liArray.map( (li) => {
-        return {
-            label: li.innerText.trim(),
-            complete: li.className === 'completed' ? true : false
-        }
-    });
-
     EventStore.add(EventStore.events, [{
         channel: 'async',
         topic: 'todo.filter',
-        data: {
-            filter: e.target.location.hash.substr(2),
-            todos: todos
-        }
+        data: e.target.location.hash.substr(2)
     }]);
 }, false);
 
@@ -152,6 +138,24 @@ function renderTodos(state) {
         if(todo.complete) {
             li.className = 'completed';
             input.checked = true;            
+        }
+
+        document.querySelectorAll('footer .filters li a').forEach( (link) => {
+            link.className = '';
+        });
+
+        if(state.currentFilter === 'completed' && li.className !== 'completed') {
+            li.style.display = 'none';
+        } else if(state.currentFilter === 'active' && li.className === 'completed') {
+            li.style.display = 'none';
+        }
+        
+        if(state.currentFilter === 'completed') {
+            document.querySelector("a[href='#/completed']").className = 'selected';
+        } else if(state.currentFilter === 'active') {
+            document.querySelector("a[href='#/active']").className = 'selected';
+        } else {
+            document.querySelector("a[href='#/']").className = 'selected';
         }
         
         input.addEventListener('click', (e) => {

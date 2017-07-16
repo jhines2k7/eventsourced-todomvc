@@ -13,6 +13,8 @@ export default function reduce(events) {
             if(!event.data.wasComplete) {
                 state.itemsLeft--;
             }
+
+            state.numCompletedTodos--;
         }
 
         if(event.topic === 'todo.toggle') {
@@ -41,17 +43,7 @@ export default function reduce(events) {
         }
 
         if(event.topic === 'todo.filter') {
-            let filtered = event.data.todos.filter( (todo) => {
-                if(event.data.filter === 'active') {
-                    return !todo.complete;
-                } else if(event.data.filter === 'completed') {
-                    return todo.complete;
-                } else {
-                    return todo;
-                }            
-            });
-
-            state.todos = filtered   
+            state.currentFilter = event.data;   
         }
 
         return state;
